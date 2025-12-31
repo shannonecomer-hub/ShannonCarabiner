@@ -1,0 +1,229 @@
+.carabiner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    width: 100vw;
+    /* background-color: #ffffff; Removed to allow app background to show */
+    perspective: 2000px;
+    overflow: hidden;
+    font-family: 'Inter', sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+    .carabiner-container {
+        background-color: #000000;
+    }
+}
+
+.carabiner-wrapper {
+    position: relative;
+    /* Shift UP on the page as requested (counter-balance long pins) */
+    top: -15vh;
+
+    transform-style: preserve-3d;
+    /* Rotate to make SHANNON horizontal. Text is approx diagonal. */
+    /* Increased Scale: 0.78 * 1.25 = 0.975 -> 0.975 */
+    transform: scale(0.975) rotate(-58deg);
+    z-index: 10;
+
+    /* Ensure wrapper shrinks to fit the image exactly so percentages are accurate */
+    display: inline-flex;
+    width: auto;
+    justify-content: center;
+}
+
+.carabiner-img {
+    display: block;
+    max-width: 500px;
+    height: auto;
+    /* Multiply mode treats white as transparent */
+    mix-blend-mode: multiply;
+    /* Boost brightness/contrast to ensure background is #FFFFFF and vanishes */
+    filter: brightness(1.05) contrast(1.05);
+    /* Soft blend edges just in case */
+    -webkit-mask-image: radial-gradient(circle at center, black 65%, transparent 100%);
+    mask-image: radial-gradient(circle at center, black 65%, transparent 100%);
+}
+
+.tags-anchor {
+    position: absolute;
+    /* Moving to the EXACT CENTER OF THE HOLE. */
+    top: 75.25%;
+    left: 34.25%;
+    width: 0;
+    height: 0;
+    transform-style: preserve-3d;
+    z-index: 5;
+}
+
+/* DEBUG VISUALS */
+.visual-circle {
+    display: none;
+}
+
+.visual-center {
+    display: none;
+}
+
+.tag-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform-origin: top center;
+    perspective: 1000px;
+    transform-style: preserve-3d;
+    transition: transform 0.3s ease, z-index 0s;
+    cursor: pointer;
+}
+
+.tag-wrapper:hover {
+    z-index: 100;
+}
+
+.tag-plate {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-bottom: 25px;
+
+    /* Push tag down for longer pin */
+    margin-top: 48px;
+
+    width: 55px;
+    height: 240px;
+
+    /* Front Face */
+    background: linear-gradient(135deg, #f3f4f6 0%, #9ca3af 40%, #e5e7eb 100%);
+    border-radius: 8px;
+    /* Slightly sharper corners for a thick plate look */
+
+    /* 3D THICKNESS SIMULATION */
+    /* We use a thick border-right/bottom or box-shadows to simulate depth when rotated.
+       However, since we rotate almost to 90deg, we need a real 'side' face. 
+       Let's use a pseudo-element for the visible side edge. */
+    transform-style: preserve-3d;
+    backface-visibility: visible;
+
+    /* Center the 'volume' on the pin. 
+       Thickness (20px). Try shifting BACK by 10px so the 'Front' is at -10, 
+       and if thickness grows forward (+20), it centers at +10? 
+       Or if it grows back (-20), center is -20.
+       Trying the inverse based on user feedback. */
+    transform: translateZ(3px);
+
+    border: 1px solid #d4d4d8;
+
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    color: #27272a;
+    font-weight: 500;
+    font-size: 15px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+/* The SIDE Edge (Thickness) */
+.tag-plate::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    /* Attach to right edge */
+    width: 25px;
+    /* THICKNESS width: Increased to 24px for visibility */
+    height: 100%;
+    background: #6b7280;
+    /* Darker metallic side */
+    transform-origin: right center;
+    transform: rotateY(-90deg);
+    /* Fold back to make a side */
+    border-radius: 3px;
+    /* Slight roundness */
+}
+
+/* The Pin (Round Solid Cylinder) */
+.tag-ring {
+    position: absolute;
+    /* Move up to compensate for vertical height (-Height/2) */
+    /* Move up to compensate for vertical height (-Height/2 for center, but here we want bottom at 48px) */
+    /* Target Bottom = 48px. Height = 64px. Top = 48 - 64 = -16px. */
+    top: -16px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    /* Shortened Length: 64px (Was 96px) - Reduced from TOP side */
+    width: 10px;
+    /* Matched to Tag Thickness (24px) */
+    height: 64px;
+
+    /* Enhanced Cylinder Gradient: Dark edges, bright center highlight */
+    background: linear-gradient(to right, #4b5563 0%, #d1d5db 40%, #f3f4f6 50%, #d1d5db 60%, #4b5563 100%);
+
+    border: none;
+    border-radius: 6px;
+    z-index: -1;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    /* Drop shadow for depth */
+
+    /* Enable 3D for the cross-plane */
+    transform-style: preserve-3d;
+}
+
+/* Swivel Section Line (90% down the pin) */
+.tag-ring::after {
+    content: '';
+    position: absolute;
+    /* 90% of 64px = 57.6px from top */
+    top: 57.6px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: #1f2937a2;
+    /* Dark line */
+    border-radius: 1px;
+    z-index: 1;
+    /* Add shadow to make visible from all angles */
+    box-shadow: 0 0 0 100px #1f29379d inset;
+}
+
+/* CROSS PLANE for 3D Volume (Side View) */
+.tag-ring::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    /* Same gradient */
+    background: linear-gradient(to right, #4b5563 0%, #d1d5db 40%, #f3f4f6 50%, #d1d5db 60%, #4b5563 100%);
+
+    border-radius: 6px;
+    /* Rotate 90deg to form a cross/plus shape. visible from side. */
+    transform: rotateY(90deg);
+}
+
+/* VISUAL DEBUG HELPERS - HIDDEN */
+.visual-circle,
+.visual-center {
+    display: none;
+}
+
+.tag-wrapper:hover {
+    z-index: 100;
+}
+
+.tag-plate:hover {
+    background: linear-gradient(135deg, #ffffff 0%, #d1d5db 50%, #f9fafb 100%);
+    box-shadow:
+        0 0 20px rgba(255, 255, 255, 0.4),
+        0 30px 60px rgba(0, 0, 0, 0.3);
+    color: #000;
+}
+
+/* Hover effect for thickness */
+.tag-plate:hover::before {
+    background: #9ca3af;
+    /* Lighter side on hover */
+}
