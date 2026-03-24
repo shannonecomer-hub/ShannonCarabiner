@@ -103,6 +103,17 @@ const CarabinerMenu3D = () => {
     const [activeTag, setActiveTag] = useState(null);
     const enterGroupRef = useRef();
 
+    // Forward scroll events to the parent Wix page so iFrame doesn't trap them
+    useEffect(() => {
+        const handleWheel = (e) => {
+            if (window.top !== window.self) {
+                window.top.scrollBy(0, e.deltaY);
+            }
+        };
+        window.addEventListener('wheel', handleWheel, { passive: true });
+        return () => window.removeEventListener('wheel', handleWheel);
+    }, []);
+
     const rootControl = useControls({
         global: folder({ globalPos: [-0.067, 1.121, 0.025], globalRot: [0.91, 1.68, 39.36] }),
         carabiner: folder({ rotation: 36.18, scale: 0.97, yOffset: 1.018, modelRot: [0.35, -1.55, 0.45], modelPos: [-1.0981, 0.9023, -0.26], modelScale: 2.809 }),
