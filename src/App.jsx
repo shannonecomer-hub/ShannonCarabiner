@@ -1,10 +1,10 @@
-import CarabinerMenu from './components/CarabinerMenu';
+import CarabinerMenu3D from './components/CarabinerMenu3D';
 import './index.css';
 
 function App() {
   return (
     <div style={{ width: '100vw', height: '100vh', overflow: 'hidden', background: '#ffffff' }}>
-      <CarabinerMenu />
+      <CarabinerMenu3D />
     </div>
   );
 }
