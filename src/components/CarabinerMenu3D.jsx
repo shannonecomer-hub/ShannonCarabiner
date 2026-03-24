@@ -6,7 +6,8 @@ import * as THREE from 'three';
 import './CarabinerMenu.css';
 
 function CarabinerModel(props) {
-    const { nodes } = useGLTF('/carabiner+clip+3d+model.glb');
+    const modelPath = import.meta.env.BASE_URL + 'carabiner+clip+3d+model.glb';
+    const { nodes } = useGLTF(modelPath);
     const meshName = Object.keys(nodes).find(key => nodes[key].type === 'Mesh');
     if (!meshName) return null;
     return (
