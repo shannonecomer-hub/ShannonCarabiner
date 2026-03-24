@@ -6,13 +6,10 @@
     height: 100vh;
     overflow: hidden;
     font-family: 'Inter', sans-serif;
+    background-color: #ffffff;
 }
 
-@media (prefers-color-scheme: dark) {
-    .carabiner-container {
-        background-color: #000000;
-    }
-}
+
 
 .carabiner-wrapper {
     position: relative;
