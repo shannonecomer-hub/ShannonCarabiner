@@ -164,7 +164,7 @@ const CarabinerMenu3D = () => {
                             </EnterAnimation>
                             <ContactShadows position={[0, -2.5, 0]} opacity={0.3} scale={15} blur={3} color="#000000" />
                         </Suspense>
-                        <OrbitControls />
+                        <OrbitControls enableZoom={false} />
                     </Canvas>
                 </div>
             </div>
