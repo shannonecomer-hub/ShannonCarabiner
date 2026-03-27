@@ -167,18 +167,21 @@ const CarabinerMenu3D = () => {
                                                         finalUrl = 'https://shannonecomer.wixsite.com/shannon' + finalUrl;
                                                     }
 
-                                                    if (window.parent !== window.self) {
+                                                    if (window.top !== window.self) {
                                                         window.parent.postMessage(finalUrl, "*");
-                                                    }
-
-                                                    try {
-                                                        const link = document.createElement('a');
-                                                        link.href = finalUrl;
-                                                        link.target = '_top';
-                                                        document.body.appendChild(link);
-                                                        link.click();
-                                                        document.body.removeChild(link);
-                                                    } catch (err) {
+                                                        try { window.top.location.href = finalUrl; } catch (e) {}
+                                                        try { window.open(finalUrl, '_top'); } catch (e) {}
+                                                        try {
+                                                            const link = document.createElement('a');
+                                                            link.href = finalUrl;
+                                                            link.target = '_parent';
+                                                            document.body.appendChild(link);
+                                                            link.click();
+                                                            document.body.removeChild(link);
+                                                        } catch (e) {}
+                                                        // Last resort: navigate the iframe itself so at least SOMETHING happens visibly
+                                                        setTimeout(() => { window.location.href = finalUrl; }, 500);
+                                                    } else {
                                                         window.location.href = finalUrl;
                                                     }
                                                 }}
