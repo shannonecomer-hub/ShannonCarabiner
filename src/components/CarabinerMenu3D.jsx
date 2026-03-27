@@ -140,7 +140,7 @@ const CarabinerMenu3D = () => {
         { id: 1, label: 'Home', x: rootControl.x1, y: rootControl.y1, rotation: rootControl.rot1, rx: rootControl.rx1, ry: rootControl.ry1, rz: rootControl.rz1, textSize: rootControl.size1, url: '/' },
         { id: 2, label: 'About Me', x: rootControl.x2, y: rootControl.y2, rotation: rootControl.rot2, rx: rootControl.rx2, ry: rootControl.ry2, rz: rootControl.rz2, textSize: rootControl.size2, url: '/about' },
         { id: 3, label: 'Photography', x: rootControl.x3, y: rootControl.y3, rotation: rootControl.rot3, rx: rootControl.rx3, ry: rootControl.ry3, rz: rootControl.rz3, textSize: rootControl.size3, url: '/photography' },
-        { id: 4, label: 'Advertising', x: rootControl.x4, y: rootControl.y4, rotation: rootControl.rot4, rx: rootControl.rx4, ry: rootControl.ry4, rz: rootControl.rz4, textSize: rootControl.size4, url: 'https://shannonecomer.wixsite.com/shannonecomer/portfolio' },
+        { id: 4, label: 'Advertising', x: rootControl.x4, y: rootControl.y4, rotation: rootControl.rot4, rx: rootControl.rx4, ry: rootControl.ry4, rz: rootControl.rz4, textSize: rootControl.size4, url: 'https://shannonecomer.wixsite.com/shannon/portfolio' },
         { id: 5, label: 'Contact', x: rootControl.x5, y: rootControl.y5, rotation: rootControl.rot5, rx: rootControl.rx5, ry: rootControl.ry5, rz: rootControl.rz5, textSize: rootControl.size5, url: '/contact' }
     ];
 
