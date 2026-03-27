@@ -54,10 +54,10 @@ function Tag3D({ id, label, isHovered, activeTagId, onPointerEnter, onPointerLea
             const side = id < activeTagId ? 1 : -1;
             targetRotationZ += side * (10 * (Math.PI / 180));
         }
-        
+
         // Slower for initial fanning, snappier for hover interaction
         const lerpFactor = isHovered || activeTagId !== null ? 0.12 : 0.035;
-        
+
         mainPivotRef.current.rotation.z = THREE.MathUtils.lerp(mainPivotRef.current.rotation.z, targetRotationZ, lerpFactor);
 
         let targetSwingY = isHovered ? 0 : 65 * (Math.PI / 180);
@@ -123,7 +123,7 @@ const CarabinerMenu3D = () => {
         tag4: folder({ l4: { value: 'Advertising', editable: false }, x4: -1.5902, y4: 0.0352, rot4: -31, rx4: 0, ry4: -37.65, rz4: 0, size4: 14 }),
         tag5: folder({ l5: { value: 'Contact', editable: false }, x5: -1.81, y5: 0.23, rot5: -46, rx5: 0, ry5: -38.34, rz5: 0, size5: 14 }),
         fan: folder({ fx: -0.25, fy: -0.43, fz: -0.13 }),
-        intro: folder({ startX: 0.115, startY: 0.21, endX: -0.1615, endY: -0.1712, speed: 0.025, startScale: 0.7, endScale: 1 })
+        intro: folder({ startX: 0.769, startY: 1.21, endX: -0.1615, endY: -0.1712, speed: 0.012, startScale: 0.663, endScale: 1.03 })
     });
 
     const latestValues = useRef(rootControl);
@@ -158,7 +158,7 @@ const CarabinerMenu3D = () => {
                                     <Center position={rootControl.modelPos}><CarabinerModel scale={rootControl.modelScale} rotation={rootControl.modelRot} /></Center>
                                     <group position={[rootControl.fx, rootControl.fy, rootControl.fz]}>
                                         {tags.map(tag => (
-                                            <Tag3D key={tag.id} {...tag} config={tag} isHovered={activeTag === tag.id} activeTagId={activeTag} onPointerEnter={() => setActiveTag(tag.id)} onPointerLeave={() => setActiveTag(null)} 
+                                            <Tag3D key={tag.id} {...tag} config={tag} isHovered={activeTag === tag.id} activeTagId={activeTag} onPointerEnter={() => setActiveTag(tag.id)} onPointerLeave={() => setActiveTag(null)}
                                                 onClick={(e) => {
                                                     if (!tag.url) return;
                                                     // This ensures a Wix embed redirects the WHOLE PAGE
@@ -167,7 +167,7 @@ const CarabinerMenu3D = () => {
                                                     } else {
                                                         window.location.href = tag.url;
                                                     }
-                                                }} 
+                                                }}
                                             />
                                         ))}
                                     </group>
