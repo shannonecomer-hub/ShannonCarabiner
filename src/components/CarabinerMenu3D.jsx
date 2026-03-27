@@ -162,9 +162,18 @@ const CarabinerMenu3D = () => {
                                                 onClick={(e) => {
                                                     if (!tag.url) return;
                                                     // This ensures a Wix embed redirects the WHOLE PAGE
-                                                    if (window.top !== window.self) {
-                                                        window.open(tag.url, '_top');
-                                                    } else {
+                                                    try {
+                                                        let finalUrl = tag.url;
+                                                        if (finalUrl.startsWith('/')) {
+                                                            finalUrl = 'https://shannonecomer.wixsite.com/shannon' + finalUrl;
+                                                        }
+                                                        const link = document.createElement('a');
+                                                        link.href = finalUrl;
+                                                        link.target = '_top';
+                                                        document.body.appendChild(link);
+                                                        link.click();
+                                                        document.body.removeChild(link);
+                                                    } catch (err) {
                                                         window.location.href = tag.url;
                                                     }
                                                 }}
