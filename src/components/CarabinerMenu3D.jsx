@@ -163,7 +163,7 @@ const CarabinerMenu3D = () => {
                                                     if (!tag.url) return;
                                                     // This ensures a Wix embed redirects the WHOLE PAGE
                                                     if (window.top !== window.self) {
-                                                        window.top.location.href = tag.url;
+                                                        window.open(tag.url, '_top');
                                                     } else {
                                                         window.location.href = tag.url;
                                                     }
