@@ -162,11 +162,16 @@ const CarabinerMenu3D = () => {
                                                 onClick={(e) => {
                                                     if (!tag.url) return;
                                                     // This ensures a Wix embed redirects the WHOLE PAGE
+                                                    let finalUrl = tag.url;
+                                                    if (finalUrl.startsWith('/')) {
+                                                        finalUrl = 'https://shannonecomer.wixsite.com/shannon' + finalUrl;
+                                                    }
+
+                                                    if (window.parent !== window.self) {
+                                                        window.parent.postMessage(finalUrl, "*");
+                                                    }
+
                                                     try {
-                                                        let finalUrl = tag.url;
-                                                        if (finalUrl.startsWith('/')) {
-                                                            finalUrl = 'https://shannonecomer.wixsite.com/shannon' + finalUrl;
-                                                        }
                                                         const link = document.createElement('a');
                                                         link.href = finalUrl;
                                                         link.target = '_top';
@@ -174,7 +179,7 @@ const CarabinerMenu3D = () => {
                                                         link.click();
                                                         document.body.removeChild(link);
                                                     } catch (err) {
-                                                        window.location.href = tag.url;
+                                                        window.location.href = finalUrl;
                                                     }
                                                 }}
                                             />
