@@ -87,9 +87,10 @@ function Tag3D({ id, label, isHovered, activeTagId, onPointerEnter, onPointerLea
                         </RoundedBox>
                     </mesh>
                     <Text position={[0, hingePos - pinH - plateH + (12 * scaleFactor), (10 * scaleFactor * tagScale / 2) + 0.015]}
+                        font={import.meta.env.BASE_URL + 'Roboto-Light.woff'}
                         fontSize={textSize * scaleFactor} color={isHovered ? "#000000" : "#2a2a2e"}
                         anchorX="right" anchorY="middle" rotation={[0, 0, -Math.PI / 2]}
-                        letterSpacing={0.15} fontWeight="500" maxWidth={plateH * 0.9}
+                        letterSpacing={0.15} maxWidth={plateH * 0.9}
                     >
                         {label.toUpperCase()}
                     </Text>
@@ -119,8 +120,8 @@ const CarabinerMenu3D = () => {
         carabiner: folder({ rotation: 36.18, scale: 0.97, yOffset: 1.018, modelRot: [0.35, -1.55, 0.45], modelPos: [-1.0981, 0.9023, -0.26], modelScale: 2.809 }),
         tag1: folder({ l1: { value: 'Home', editable: false }, x1: -0.7649, y1: 0.108, rot1: 23, rx1: 0, ry1: -25.98, rz1: 0, size1: 14 }),
         tag2: folder({ l2: { value: 'About Me', editable: false }, x2: -1.0218, y2: -0.0386, rot2: 6.32, rx2: 0, ry2: -34, rz2: 0, size2: 14 }),
-        tag3: folder({ l3: { value: 'Photography', editable: false }, x3: -1.311, y3: -0.062, rot3: -12.78, rx3: 0, ry3: -29.68, rz3: 0, size3: 14 }),
-        tag4: folder({ l4: { value: 'Advertising', editable: false }, x4: -1.5902, y4: 0.0352, rot4: -31, rx4: 0, ry4: -37.65, rz4: 0, size4: 14 }),
+        tag3: folder({ l3: { value: 'Advertising', editable: false }, x3: -1.311, y3: -0.062, rot3: -12.78, rx3: 0, ry3: -29.68, rz3: 0, size3: 14 }),
+        tag4: folder({ l4: { value: 'Side Projects', editable: false }, x4: -1.5902, y4: 0.0352, rot4: -31, rx4: 0, ry4: -37.65, rz4: 0, size4: 14 }),
         tag5: folder({ l5: { value: 'Contact', editable: false }, x5: -1.81, y5: 0.23, rot5: -46, rx5: 0, ry5: -38.34, rz5: 0, size5: 14 }),
         fan: folder({ fx: -0.25, fy: -0.43, fz: -0.13 }),
         intro: folder({ startX: 0.769, startY: 1.21, endX: -0.1615, endY: -0.1712, speed: 0.012, startScale: 0.663, endScale: 1.03 })
@@ -139,8 +140,8 @@ const CarabinerMenu3D = () => {
     const tags = [
         { id: 1, label: 'Home', x: rootControl.x1, y: rootControl.y1, rotation: rootControl.rot1, rx: rootControl.rx1, ry: rootControl.ry1, rz: rootControl.rz1, textSize: rootControl.size1, url: '/' },
         { id: 2, label: 'About Me', x: rootControl.x2, y: rootControl.y2, rotation: rootControl.rot2, rx: rootControl.rx2, ry: rootControl.ry2, rz: rootControl.rz2, textSize: rootControl.size2, url: '/about' },
-        { id: 3, label: 'Photography', x: rootControl.x3, y: rootControl.y3, rotation: rootControl.rot3, rx: rootControl.rx3, ry: rootControl.ry3, rz: rootControl.rz3, textSize: rootControl.size3, url: '/photography' },
-        { id: 4, label: 'Advertising', x: rootControl.x4, y: rootControl.y4, rotation: rootControl.rot4, rx: rootControl.rx4, ry: rootControl.ry4, rz: rootControl.rz4, textSize: rootControl.size4, url: 'https://shannonecomer.wixsite.com/shannon/portfolio' },
+        { id: 3, label: 'Advertising', x: rootControl.x3, y: rootControl.y3, rotation: rootControl.rot3, rx: rootControl.rx3, ry: rootControl.ry3, rz: rootControl.rz3, textSize: rootControl.size3, url: 'https://shannonecomer.wixsite.com/shannon/portfolio' },
+        { id: 4, label: 'Side Projects', x: rootControl.x4, y: rootControl.y4, rotation: rootControl.rot4, rx: rootControl.rx4, ry: rootControl.ry4, rz: rootControl.rz4, textSize: rootControl.size4, url: '/photography' },
         { id: 5, label: 'Contact', x: rootControl.x5, y: rootControl.y5, rotation: rootControl.rot5, rx: rootControl.rx5, ry: rootControl.ry5, rz: rootControl.rz5, textSize: rootControl.size5, url: '/contact' }
     ];
 
