@@ -13,7 +13,7 @@ function CarabinerModel(props) {
     return (
         <group {...props} dispose={null}>
             <mesh geometry={nodes[meshName].geometry} castShadow receiveShadow>
-                <meshPhysicalMaterial metalness={1.0} roughness={0.12} color="#f3f4f6" envMapIntensity={2.5} />
+                <meshPhysicalMaterial metalness={1.0} roughness={0.12} color="#78716c" envMapIntensity={2.5} />
             </mesh>
         </group>
     );
@@ -83,12 +83,12 @@ function Tag3D({ id, label, isHovered, activeTagId, onPointerEnter, onPointerLea
                     </mesh>
                     <mesh position={[0, hingePos - pinH - (plateH / 2), 0]} castShadow receiveShadow>
                         <RoundedBox args={[(85 * scaleFactor) * tagScale, plateH, (10 * scaleFactor) * tagScale]} radius={0.02} smoothness={5}>
-                            <meshPhysicalMaterial metalness={0.9} roughness={0.2} color="#e5e7eb" envMapIntensity={2.0} />
+                            <meshPhysicalMaterial metalness={0.9} roughness={0.2} color="#E8E3D9" envMapIntensity={2.0} />
                         </RoundedBox>
                     </mesh>
                     <Text position={[0, hingePos - pinH - plateH + (12 * scaleFactor), (10 * scaleFactor * tagScale / 2) + 0.015]}
                         font={import.meta.env.BASE_URL + 'Roboto-Light.woff'}
-                        fontSize={textSize * scaleFactor} color={isHovered ? "#000000" : "#2a2a2e"}
+                        fontSize={textSize * scaleFactor} color={isHovered ? "#000000" : "#1A1A1A"}
                         anchorX="right" anchorY="middle" rotation={[0, 0, -Math.PI / 2]}
                         letterSpacing={0.15} maxWidth={plateH * 0.9}
                     >
@@ -130,10 +130,21 @@ const CarabinerMenu3D = () => {
     const latestValues = useRef(rootControl);
     latestValues.current = rootControl;
 
-    useControls({
+    const { showTags, showShadows } = useControls({
+        showTags: { value: true, label: 'Show Tags' },
+        showShadows: { value: true, label: 'Show Shadows' },
         'Copy Master JSON': button(() => {
             navigator.clipboard.writeText(JSON.stringify(latestValues.current, null, 2));
             alert("ALIGNED NUMBERS COPIED TO CLIPBOARD!");
+        }),
+        'Download Image': button(() => {
+            const canvas = document.querySelector('canvas');
+            if (canvas) {
+                const link = document.createElement('a');
+                link.download = 'carabiner-custom.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }
         })
     });
 
@@ -149,16 +160,21 @@ const CarabinerMenu3D = () => {
         <div className="carabiner-container">
             <Leva hidden />
             <div className="carabiner-wrapper">
+                <div className="abstract-shape"></div>
+                <div className="brand-overlay">
+                    <h1 className="brand-overlay-title">01 // EXPLORE</h1>
+                    <p className="brand-overlay-subtitle">S-Forge Carabiner</p>
+                </div>
                 <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 10, pointerEvents: 'none' }}>
-                    <Canvas shadows camera={{ position: [0, 0, 5.5], fov: 45 }} gl={{ alpha: true }} style={{ pointerEvents: 'auto' }}>
+                    <Canvas shadows camera={{ position: [0, 0, 5.5], fov: 45 }} gl={{ alpha: true, preserveDrawingBuffer: true }} style={{ pointerEvents: 'auto' }}>
                         <Suspense fallback={null}>
-                            <ambientLight intensity={0.6} />
-                            <Environment preset="studio" />
+                            <ambientLight intensity={0.8} />
+                            <Environment preset="city" />
                             <EnterAnimation startX={rootControl.startX} startY={rootControl.startY} endX={rootControl.endX} endY={rootControl.endY} speed={rootControl.speed} startScale={rootControl.startScale} endScale={rootControl.endScale}>
                                 <group rotation={[rootControl.globalRot[0] * (Math.PI / 180), rootControl.globalRot[1] * (Math.PI / 180), rootControl.globalRot[2] * (Math.PI / 180)]} position={rootControl.globalPos} scale={rootControl.scale} >
                                     <Center position={rootControl.modelPos}><CarabinerModel scale={rootControl.modelScale} rotation={rootControl.modelRot} /></Center>
                                     <group position={[rootControl.fx, rootControl.fy, rootControl.fz]}>
-                                        {tags.map(tag => (
+                                        {showTags && tags.map(tag => (
                                             <Tag3D key={tag.id} {...tag} config={tag} isHovered={activeTag === tag.id} activeTagId={activeTag} onPointerEnter={() => setActiveTag(tag.id)} onPointerLeave={() => setActiveTag(null)}
                                                 onClick={(e) => {
                                                     if (!tag.url) return;
@@ -170,8 +186,8 @@ const CarabinerMenu3D = () => {
 
                                                     if (window.top !== window.self) {
                                                         window.parent.postMessage(finalUrl, "*");
-                                                        try { window.top.location.href = finalUrl; } catch (e) {}
-                                                        try { window.open(finalUrl, '_top'); } catch (e) {}
+                                                        try { window.top.location.href = finalUrl; } catch (e) { }
+                                                        try { window.open(finalUrl, '_top'); } catch (e) { }
                                                         try {
                                                             const link = document.createElement('a');
                                                             link.href = finalUrl;
@@ -179,7 +195,7 @@ const CarabinerMenu3D = () => {
                                                             document.body.appendChild(link);
                                                             link.click();
                                                             document.body.removeChild(link);
-                                                        } catch (e) {}
+                                                        } catch (e) { }
                                                         // Last resort: navigate the iframe itself so at least SOMETHING happens visibly
                                                         setTimeout(() => { window.location.href = finalUrl; }, 500);
                                                     } else {
@@ -191,7 +207,7 @@ const CarabinerMenu3D = () => {
                                     </group>
                                 </group>
                             </EnterAnimation>
-                            <ContactShadows position={[0, -2.5, 0]} opacity={0.3} scale={15} blur={3} color="#000000" />
+                            {showShadows && <ContactShadows position={[0, -2.5, 0]} opacity={0.3} scale={15} blur={3} color="#000000" />}
                         </Suspense>
                         <OrbitControls enableZoom={false} />
                     </Canvas>

@@ -6,7 +6,7 @@
     height: 100vh;
     overflow: hidden;
     font-family: 'Inter', sans-serif;
-    background-color: #ffffff;
+    background-color: transparent;
 }
 
 
@@ -214,4 +214,47 @@
 .tag-plate:hover::before {
     background: #9ca3af;
     /* Lighter side on hover */
+}
+
+/* BRAND IDENTITY LAYERS */
+.brand-overlay {
+    position: absolute;
+    top: 6vh;
+    left: 6vw;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.brand-overlay-title {
+    font-family: 'Outfit', 'Syne', 'Inter', sans-serif;
+    font-size: 7vw;
+    font-weight: 800;
+    color: #1A1A1A;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    margin: 0;
+    white-space: nowrap;
+}
+
+.brand-overlay-subtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    color: #C84B31;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    margin-top: 1rem;
+    text-transform: uppercase;
+}
+
+.abstract-shape {
+    position: absolute;
+    top: 50%;
+    right: -5vw;
+    transform: translateY(-50%);
+    width: 60vw;
+    height: 60vw;
+    background-color: #E8E3D9;
+    border-radius: 50%;
+    z-index: 0;
+    pointer-events: none;
 }
