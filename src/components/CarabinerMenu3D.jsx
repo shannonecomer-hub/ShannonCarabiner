@@ -160,11 +160,6 @@ const CarabinerMenu3D = () => {
         <div className="carabiner-container">
             <Leva hidden />
             <div className="carabiner-wrapper">
-                <div className="abstract-shape"></div>
-                <div className="brand-overlay">
-                    <h1 className="brand-overlay-title">01 // EXPLORE</h1>
-                    <p className="brand-overlay-subtitle">S-Forge Carabiner</p>
-                </div>
                 <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 10, pointerEvents: 'none' }}>
                     <Canvas shadows camera={{ position: [0, 0, 5.5], fov: 45 }} gl={{ alpha: true, preserveDrawingBuffer: true }} style={{ pointerEvents: 'auto' }}>
                         <Suspense fallback={null}>
