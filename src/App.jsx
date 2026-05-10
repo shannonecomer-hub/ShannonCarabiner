@@ -1,12 +1,13 @@
-import CarabinerMenu3D from './components/CarabinerMenu3D';
+import Portfolio from './Portfolio';
 import './index.css';
 
 function App() {
   return (
-    <div style={{ width: '100vw', height: '100vh', overflow: 'hidden', background: '#ffffff' }}>
-      <CarabinerMenu3D />
+    <div className="app-root">
+      <Portfolio />
     </div>
   );
 }
 
 export default App;
+

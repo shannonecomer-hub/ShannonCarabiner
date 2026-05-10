@@ -161,7 +161,7 @@ const CarabinerMenu3D = () => {
             <Leva hidden />
             <div className="carabiner-wrapper">
                 <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 10, pointerEvents: 'none' }}>
-                    <Canvas shadows camera={{ position: [0, 0, 5.5], fov: 45 }} gl={{ alpha: true, preserveDrawingBuffer: true }} style={{ pointerEvents: 'auto' }}>
+                    <Canvas shadows camera={{ position: [0, 0, 7.0], fov: 45 }} gl={{ alpha: true, preserveDrawingBuffer: true }} style={{ pointerEvents: 'auto' }}>
                         <Suspense fallback={null}>
                             <ambientLight intensity={0.8} />
                             <Environment preset="city" />
@@ -202,7 +202,7 @@ const CarabinerMenu3D = () => {
                                     </group>
                                 </group>
                             </EnterAnimation>
-                            {showShadows && <ContactShadows position={[0, -2.5, 0]} opacity={0.3} scale={15} blur={3} color="#000000" />}
+                            {showShadows && <ContactShadows position={[0, -2.5, 0]} opacity={0.3} scale={40} blur={3} far={10} resolution={1024} color="#000000" />}
                         </Suspense>
                         <OrbitControls enableZoom={false} />
                     </Canvas>
