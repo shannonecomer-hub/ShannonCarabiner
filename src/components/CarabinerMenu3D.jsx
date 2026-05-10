@@ -12,7 +12,7 @@ function CarabinerModel(props) {
     if (!meshName) return null;
     return (
         <group {...props} dispose={null}>
-            <mesh geometry={nodes[meshName].geometry} castShadow receiveShadow>
+            <mesh geometry={nodes[meshName].geometry} castShadow receiveShadow raycast={() => null}>
                 <meshPhysicalMaterial metalness={1.0} roughness={0.12} color="#78716c" envMapIntensity={2.5} />
             </mesh>
         </group>
