@@ -77,9 +77,9 @@ function Tag3D({ id, label, isHovered, activeTagId, onPointerEnter, onPointerLea
                 onClick={(e) => { e.stopPropagation(); onClick(e); }}
             >
                 <group position={[0, -hingePos, 0]}>
-                    {/* Unified invisible hitbox */}
-                    <mesh position={[0, hingePos - pinH - (plateH / 2), 0]}>
-                        <boxGeometry args={[(85 * scaleFactor) * tagScale * 1.5, plateH + pinH, (10 * scaleFactor) * tagScale * 3]} />
+                    {/* Unified rotationally-symmetric invisible hitbox (prevents animation jitter) */}
+                    <mesh position={[0, -(pinH + plateH) / 2, 0]}>
+                        <cylinderGeometry args={[(85 * scaleFactor) * tagScale * 0.8, (85 * scaleFactor) * tagScale * 0.8, -2 * hingePos + pinH + plateH, 16]} />
                         <meshBasicMaterial visible={false} />
                     </mesh>
                     {/* Visual elements */}
