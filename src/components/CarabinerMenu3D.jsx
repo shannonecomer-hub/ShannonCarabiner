@@ -23,10 +23,10 @@ function PillRing({ radius, straightLength, tubeRadius }) {
     const halfL = straightLength / 2;
     return (
         <group rotation={[0, Math.PI / 2, 0]}>
-            <mesh position={[0, halfL, 0]} castShadow><torusGeometry args={[radius, tubeRadius, 16, 32, Math.PI]} /><meshPhysicalMaterial metalness={1.0} roughness={0.05} color="#ffffff" /></mesh>
-            <mesh position={[0, -halfL, 0]} rotation={[0, 0, Math.PI]} castShadow><torusGeometry args={[radius, tubeRadius, 16, 32, Math.PI]} /><meshPhysicalMaterial metalness={1.0} roughness={0.05} color="#ffffff" /></mesh>
-            <mesh position={[radius, 0, 0]} castShadow><cylinderGeometry args={[tubeRadius, tubeRadius, straightLength, 32]} /><meshPhysicalMaterial metalness={1.0} roughness={0.05} color="#ffffff" /></mesh>
-            <mesh position={[-radius, 0, 0]} castShadow><cylinderGeometry args={[tubeRadius, tubeRadius, straightLength, 32]} /><meshPhysicalMaterial metalness={1.0} roughness={0.05} color="#ffffff" /></mesh>
+            <mesh position={[0, halfL, 0]} castShadow raycast={() => null}><torusGeometry args={[radius, tubeRadius, 16, 32, Math.PI]} /><meshPhysicalMaterial metalness={1.0} roughness={0.05} color="#ffffff" /></mesh>
+            <mesh position={[0, -halfL, 0]} rotation={[0, 0, Math.PI]} castShadow raycast={() => null}><torusGeometry args={[radius, tubeRadius, 16, 32, Math.PI]} /><meshPhysicalMaterial metalness={1.0} roughness={0.05} color="#ffffff" /></mesh>
+            <mesh position={[radius, 0, 0]} castShadow raycast={() => null}><cylinderGeometry args={[tubeRadius, tubeRadius, straightLength, 32]} /><meshPhysicalMaterial metalness={1.0} roughness={0.05} color="#ffffff" /></mesh>
+            <mesh position={[-radius, 0, 0]} castShadow raycast={() => null}><cylinderGeometry args={[tubeRadius, tubeRadius, straightLength, 32]} /><meshPhysicalMaterial metalness={1.0} roughness={0.05} color="#ffffff" /></mesh>
         </group>
     );
 }
@@ -77,11 +77,17 @@ function Tag3D({ id, label, isHovered, activeTagId, onPointerEnter, onPointerLea
                 onClick={(e) => { e.stopPropagation(); onClick(e); }}
             >
                 <group position={[0, -hingePos, 0]}>
-                    <mesh position={[0, hingePos - (pinH / 2), 0]} castShadow>
+                    {/* Unified invisible hitbox */}
+                    <mesh position={[0, hingePos - pinH - (plateH / 2), 0]}>
+                        <boxGeometry args={[(85 * scaleFactor) * tagScale * 1.5, plateH + pinH, (10 * scaleFactor) * tagScale * 3]} />
+                        <meshBasicMaterial visible={false} />
+                    </mesh>
+                    {/* Visual elements */}
+                    <mesh position={[0, hingePos - (pinH / 2), 0]} castShadow raycast={() => null}>
                         <cylinderGeometry args={[5 * scaleFactor * tagScale, 5 * scaleFactor * tagScale, pinH, 32]} />
                         <meshPhysicalMaterial metalness={1.0} roughness={0.05} color="#ffffff" />
                     </mesh>
-                    <mesh position={[0, hingePos - pinH - (plateH / 2), 0]} castShadow receiveShadow>
+                    <mesh position={[0, hingePos - pinH - (plateH / 2), 0]} castShadow receiveShadow raycast={() => null}>
                         <RoundedBox args={[(85 * scaleFactor) * tagScale, plateH, (10 * scaleFactor) * tagScale]} radius={0.02} smoothness={5}>
                             <meshPhysicalMaterial metalness={0.9} roughness={0.2} color="#E8E3D9" envMapIntensity={2.0} />
                         </RoundedBox>
@@ -91,6 +97,7 @@ function Tag3D({ id, label, isHovered, activeTagId, onPointerEnter, onPointerLea
                         fontSize={textSize * scaleFactor} color={isHovered ? "#000000" : "#1A1A1A"}
                         anchorX="right" anchorY="middle" rotation={[0, 0, -Math.PI / 2]}
                         letterSpacing={0.15} maxWidth={plateH * 0.9}
+                        raycast={() => null}
                     >
                         {label.toUpperCase()}
                     </Text>
