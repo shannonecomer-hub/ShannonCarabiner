@@ -237,12 +237,13 @@ const CarabinerMenu3D = () => {
         })
     });
 
+    const FRAMER_BASE = 'https://shannonnorthcott-comer.framer.website';
     const tags = [
-        { id: 1, label: 'Home', x: rootControl.x1, y: rootControl.y1, rotation: rootControl.rot1, rx: rootControl.rx1, ry: rootControl.ry1, rz: rootControl.rz1, textSize: rootControl.size1, url: '/' },
-        { id: 2, label: 'About Me', x: rootControl.x2, y: rootControl.y2, rotation: rootControl.rot2, rx: rootControl.rx2, ry: rootControl.ry2, rz: rootControl.rz2, textSize: rootControl.size2, url: '/aboutme' },
-        { id: 3, label: 'Advertising', x: rootControl.x3, y: rootControl.y3, rotation: rootControl.rot3, rx: rootControl.rx3, ry: rootControl.ry3, rz: rootControl.rz3, textSize: rootControl.size3, url: '/portfolio' },
-        { id: 4, label: 'Side Projects', x: rootControl.x4, y: rootControl.y4, rotation: rootControl.rot4, rx: rootControl.rx4, ry: rootControl.ry4, rz: rootControl.rz4, textSize: rootControl.size4, url: '/side-projects' },
-        { id: 5, label: 'Contact Me', x: rootControl.x5, y: rootControl.y5, rotation: rootControl.rot5, rx: rootControl.rx5, ry: rootControl.ry5, rz: rootControl.rz5, textSize: rootControl.size5, url: '/contact' }
+        { id: 1, label: 'Home', x: rootControl.x1, y: rootControl.y1, rotation: rootControl.rot1, rx: rootControl.rx1, ry: rootControl.ry1, rz: rootControl.rz1, textSize: rootControl.size1, url: FRAMER_BASE + '/' },
+        { id: 2, label: 'About Me', x: rootControl.x2, y: rootControl.y2, rotation: rootControl.rot2, rx: rootControl.rx2, ry: rootControl.ry2, rz: rootControl.rz2, textSize: rootControl.size2, url: FRAMER_BASE + '/aboutme' },
+        { id: 3, label: 'Advertising', x: rootControl.x3, y: rootControl.y3, rotation: rootControl.rot3, rx: rootControl.rx3, ry: rootControl.ry3, rz: rootControl.rz3, textSize: rootControl.size3, url: FRAMER_BASE + '/portfolio' },
+        { id: 4, label: 'Side Projects', x: rootControl.x4, y: rootControl.y4, rotation: rootControl.rot4, rx: rootControl.rx4, ry: rootControl.ry4, rz: rootControl.rz4, textSize: rootControl.size4, url: FRAMER_BASE + '/side-projects' },
+        { id: 5, label: 'Contact Me', x: rootControl.x5, y: rootControl.y5, rotation: rootControl.rot5, rx: rootControl.rx5, ry: rootControl.ry5, rz: rootControl.rz5, textSize: rootControl.size5, url: FRAMER_BASE + '/contact' }
     ];
 
     return (
@@ -264,25 +265,22 @@ const CarabinerMenu3D = () => {
                                                     onClick={(e) => {
                                                         if (!tag.url) return;
                                                         
+                                                        // Always an absolute Framer URL — safe to use in every context
                                                         const finalUrl = tag.url;
                                                         
-                                                        if (window.top !== window.self) {
-                                                            window.parent.postMessage(finalUrl, "*");
-                                                            try { window.top.location.href = finalUrl; } catch (e) { }
-                                                            try { window.open(finalUrl, '_top'); } catch (e) { }
-                                                            try {
-                                                                const link = document.createElement('a');
-                                                                link.href = finalUrl;
-                                                                link.target = '_parent';
-                                                                document.body.appendChild(link);
-                                                                link.click();
-                                                                document.body.removeChild(link);
-                                                            } catch (e) { }
-                                                            // Last resort: navigate the iframe itself so at least SOMETHING happens visibly
-                                                            setTimeout(() => { window.location.href = finalUrl; }, 500);
-                                                        } else {
-                                                            window.location.href = finalUrl;
-                                                        }
+                                                        // Try navigating the top-level window
+                                                        try { window.top.location.href = finalUrl; return; } catch (e) { }
+                                                        // Fallback: open in parent frame
+                                                        try { window.open(finalUrl, '_top'); return; } catch (e) { }
+                                                        // Fallback: anchor click targeting parent
+                                                        try {
+                                                            const link = document.createElement('a');
+                                                            link.href = finalUrl;
+                                                            link.target = '_top';
+                                                            document.body.appendChild(link);
+                                                            link.click();
+                                                            document.body.removeChild(link);
+                                                        } catch (e) { }
                                                     }}
                                                 />
                                             ))}
