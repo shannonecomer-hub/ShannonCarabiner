@@ -1,5 +1,5 @@
 import React, { useState, Suspense, useRef, useEffect } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { useGLTF, Environment, Center, Text, RoundedBox, ContactShadows, OrbitControls } from '@react-three/drei';
 import { Leva, useControls, button, folder } from 'leva';
 import * as THREE from 'three';
@@ -107,6 +107,89 @@ function Tag3D({ id, label, isHovered, activeTagId, onPointerEnter, onPointerLea
     );
 }
 
+function ResponsiveWrapper({ children, endX, endY }) {
+    const groupRef = useRef();
+    const { viewport } = useThree();
+    const [bounds, setBounds] = useState(null);
+
+    useEffect(() => {
+        const handle = requestAnimationFrame(() => {
+            if (!groupRef.current) return;
+            
+            const parent = groupRef.current.parent;
+            if (!parent) return;
+            
+            const parentRot = parent.rotation.clone();
+            const parentScale = parent.scale.clone();
+            
+            const originalScale = groupRef.current.scale.clone();
+            const originalPosition = groupRef.current.position.clone();
+            
+            // Set parent to its FINAL animation state for measurement
+            parent.rotation.set(endX, endY, 0);
+            parent.scale.set(1, 1, 1);
+            
+            // Set self to baseline
+            groupRef.current.scale.set(1, 1, 1);
+            groupRef.current.position.set(0, 0, 0);
+            
+            // Update matrices
+            parent.updateMatrixWorld(true);
+            groupRef.current.updateMatrixWorld(true);
+            
+            // Calculate bounding box in world space
+            const box = new THREE.Box3().setFromObject(groupRef.current);
+            
+            // Restore parent's state
+            parent.rotation.copy(parentRot);
+            parent.scale.copy(parentScale);
+            parent.updateMatrixWorld(true);
+            
+            // Restore self state
+            groupRef.current.scale.copy(originalScale);
+            groupRef.current.position.copy(originalPosition);
+            groupRef.current.updateMatrixWorld(true);
+            
+            const size = new THREE.Vector3();
+            box.getSize(size);
+            const center = new THREE.Vector3();
+            box.getCenter(center);
+            
+            // Avoid issues if size is 0
+            if (size.x > 0.1) {
+                setBounds({
+                    width: size.x,
+                    height: size.y,
+                    center: center
+                });
+            }
+        });
+        
+        return () => cancelAnimationFrame(handle);
+    }, [endX, endY]);
+
+    useFrame(() => {
+        if (!groupRef.current || !bounds) return;
+        
+        const padding = 0.85; // fit inside 85% of viewport
+        const scaleX = (viewport.width * padding) / bounds.width;
+        const scaleY = (viewport.height * padding) / bounds.height;
+        const targetScale = Math.min(scaleX, scaleY);
+        
+        const targetPos = bounds.center.clone().multiplyScalar(-targetScale);
+        
+        // Smoothly lerp towards target scale and position
+        groupRef.current.scale.setScalar(THREE.MathUtils.lerp(groupRef.current.scale.x, targetScale, 0.1));
+        groupRef.current.position.lerp(targetPos, 0.1);
+    });
+
+    return (
+        <group ref={groupRef}>
+            {children}
+        </group>
+    );
+}
+
 const CarabinerMenu3D = () => {
     const [activeTag, setActiveTag] = useState(null);
     const enterGroupRef = useRef();
@@ -157,57 +240,56 @@ const CarabinerMenu3D = () => {
 
     const tags = [
         { id: 1, label: 'Home', x: rootControl.x1, y: rootControl.y1, rotation: rootControl.rot1, rx: rootControl.rx1, ry: rootControl.ry1, rz: rootControl.rz1, textSize: rootControl.size1, url: '/' },
-        { id: 2, label: 'About Me', x: rootControl.x2, y: rootControl.y2, rotation: rootControl.rot2, rx: rootControl.rx2, ry: rootControl.ry2, rz: rootControl.rz2, textSize: rootControl.size2, url: 'https://shannonecomer.wixsite.com/shannon/aboutme' },
-        { id: 3, label: 'Advertising', x: rootControl.x3, y: rootControl.y3, rotation: rootControl.rot3, rx: rootControl.rx3, ry: rootControl.ry3, rz: rootControl.rz3, textSize: rootControl.size3, url: 'https://shannonecomer.wixsite.com/shannon/portfolio' },
-        { id: 4, label: 'Side Projects', x: rootControl.x4, y: rootControl.y4, rotation: rootControl.rot4, rx: rootControl.rx4, ry: rootControl.ry4, rz: rootControl.rz4, textSize: rootControl.size4, url: 'https://shannonecomer.wixsite.com/shannon/side-projects' },
-        { id: 5, label: 'Contact Me', x: rootControl.x5, y: rootControl.y5, rotation: rootControl.rot5, rx: rootControl.rx5, ry: rootControl.ry5, rz: rootControl.rz5, textSize: rootControl.size5, url: 'https://shannonecomer.wixsite.com/shannon/contact' }
+        { id: 2, label: 'About Me', x: rootControl.x2, y: rootControl.y2, rotation: rootControl.rot2, rx: rootControl.rx2, ry: rootControl.ry2, rz: rootControl.rz2, textSize: rootControl.size2, url: '/aboutme' },
+        { id: 3, label: 'Advertising', x: rootControl.x3, y: rootControl.y3, rotation: rootControl.rot3, rx: rootControl.rx3, ry: rootControl.ry3, rz: rootControl.rz3, textSize: rootControl.size3, url: '/portfolio' },
+        { id: 4, label: 'Side Projects', x: rootControl.x4, y: rootControl.y4, rotation: rootControl.rot4, rx: rootControl.rx4, ry: rootControl.ry4, rz: rootControl.rz4, textSize: rootControl.size4, url: '/side-projects' },
+        { id: 5, label: 'Contact Me', x: rootControl.x5, y: rootControl.y5, rotation: rootControl.rot5, rx: rootControl.rx5, ry: rootControl.ry5, rz: rootControl.rz5, textSize: rootControl.size5, url: '/contact' }
     ];
 
     return (
         <div className="carabiner-container">
             <Leva hidden />
             <div className="carabiner-wrapper">
-                <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 10, pointerEvents: 'none' }}>
+                <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 10, pointerEvents: 'none' }}>
                     <Canvas shadows camera={{ position: [0, 0, 7.0], fov: 45 }} gl={{ alpha: true, preserveDrawingBuffer: true }} style={{ pointerEvents: 'auto' }}>
                         <Suspense fallback={null}>
                             <ambientLight intensity={0.8} />
                             <Environment preset="city" />
                             <EnterAnimation startX={rootControl.startX} startY={rootControl.startY} endX={rootControl.endX} endY={rootControl.endY} speed={rootControl.speed} startScale={rootControl.startScale} endScale={rootControl.endScale}>
-                                <group rotation={[rootControl.globalRot[0] * (Math.PI / 180), rootControl.globalRot[1] * (Math.PI / 180), rootControl.globalRot[2] * (Math.PI / 180)]} position={rootControl.globalPos} scale={rootControl.scale} >
-                                    <Center position={rootControl.modelPos}><CarabinerModel scale={rootControl.modelScale} rotation={rootControl.modelRot} /></Center>
-                                    <group position={[rootControl.fx, rootControl.fy, rootControl.fz]}>
-                                        {showTags && tags.map(tag => (
-                                            <Tag3D key={tag.id} {...tag} config={tag} isHovered={activeTag === tag.id} activeTagId={activeTag} onPointerEnter={() => setActiveTag(tag.id)} onPointerLeave={() => setActiveTag(null)}
-                                                onClick={(e) => {
-                                                    if (!tag.url) return;
-                                                    // This ensures a Wix embed redirects the WHOLE PAGE
-                                                    let finalUrl = tag.url;
-                                                    if (finalUrl.startsWith('/')) {
-                                                        finalUrl = 'https://shannonecomer.wixsite.com/shannon' + finalUrl;
-                                                    }
-
-                                                    if (window.top !== window.self) {
-                                                        window.parent.postMessage(finalUrl, "*");
-                                                        try { window.top.location.href = finalUrl; } catch (e) { }
-                                                        try { window.open(finalUrl, '_top'); } catch (e) { }
-                                                        try {
-                                                            const link = document.createElement('a');
-                                                            link.href = finalUrl;
-                                                            link.target = '_parent';
-                                                            document.body.appendChild(link);
-                                                            link.click();
-                                                            document.body.removeChild(link);
-                                                        } catch (e) { }
-                                                        // Last resort: navigate the iframe itself so at least SOMETHING happens visibly
-                                                        setTimeout(() => { window.location.href = finalUrl; }, 500);
-                                                    } else {
-                                                        window.location.href = finalUrl;
-                                                    }
-                                                }}
-                                            />
-                                        ))}
+                                <ResponsiveWrapper endX={rootControl.endX} endY={rootControl.endY}>
+                                    <group rotation={[rootControl.globalRot[0] * (Math.PI / 180), rootControl.globalRot[1] * (Math.PI / 180), rootControl.globalRot[2] * (Math.PI / 180)]} position={rootControl.globalPos} scale={rootControl.scale} >
+                                        <Center position={rootControl.modelPos}><CarabinerModel scale={rootControl.modelScale} rotation={rootControl.modelRot} /></Center>
+                                        <group position={[rootControl.fx, rootControl.fy, rootControl.fz]}>
+                                            {showTags && tags.map(tag => (
+                                                <Tag3D key={tag.id} {...tag} config={tag} isHovered={activeTag === tag.id} activeTagId={activeTag} onPointerEnter={() => setActiveTag(tag.id)} onPointerLeave={() => setActiveTag(null)}
+                                                    onClick={(e) => {
+                                                        if (!tag.url) return;
+                                                        
+                                                        const finalUrl = tag.url;
+                                                        
+                                                        if (window.top !== window.self) {
+                                                            window.parent.postMessage(finalUrl, "*");
+                                                            try { window.top.location.href = finalUrl; } catch (e) { }
+                                                            try { window.open(finalUrl, '_top'); } catch (e) { }
+                                                            try {
+                                                                const link = document.createElement('a');
+                                                                link.href = finalUrl;
+                                                                link.target = '_parent';
+                                                                document.body.appendChild(link);
+                                                                link.click();
+                                                                document.body.removeChild(link);
+                                                            } catch (e) { }
+                                                            // Last resort: navigate the iframe itself so at least SOMETHING happens visibly
+                                                            setTimeout(() => { window.location.href = finalUrl; }, 500);
+                                                        } else {
+                                                            window.location.href = finalUrl;
+                                                        }
+                                                    }}
+                                                />
+                                            ))}
+                                        </group>
                                     </group>
-                                </group>
+                                </ResponsiveWrapper>
                             </EnterAnimation>
                             {showShadows && <ContactShadows position={[0, -2.5, 0]} opacity={0.3} scale={40} blur={3} far={10} resolution={1024} color="#000000" />}
                         </Suspense>
