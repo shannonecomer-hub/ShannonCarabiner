@@ -220,9 +220,8 @@ const CarabinerMenu3D = () => {
     const latestValues = useRef(rootControl);
     latestValues.current = rootControl;
 
-    const { showTags, showShadows } = useControls({
+    const { showTags } = useControls({
         showTags: { value: true, label: 'Show Tags' },
-        showShadows: { value: true, label: 'Show Shadows' },
         'Copy Master JSON': button(() => {
             navigator.clipboard.writeText(JSON.stringify(latestValues.current, null, 2));
             alert("ALIGNED NUMBERS COPIED TO CLIPBOARD!");
@@ -291,7 +290,6 @@ const CarabinerMenu3D = () => {
                                     </group>
                                 </ResponsiveWrapper>
                             </EnterAnimation>
-                            {showShadows && <ContactShadows position={[0, -2.5, 0]} opacity={0.3} scale={40} blur={3} far={10} resolution={1024} color="#000000" />}
                         </Suspense>
                         <OrbitControls enableZoom={false} />
                     </Canvas>
