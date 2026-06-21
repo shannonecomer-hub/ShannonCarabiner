@@ -56,7 +56,7 @@ function Tag3D({ id, label, isHovered, activeTagId, onPointerEnter, onPointerLea
         }
 
         // Slower for initial fanning, snappier for hover interaction
-        const lerpFactor = isHovered || activeTagId !== null ? 0.12 : 0.035;
+        const lerpFactor = isHovered || activeTagId !== null ? 0.07 : 0.02;
 
         mainPivotRef.current.rotation.z = THREE.MathUtils.lerp(mainPivotRef.current.rotation.z, targetRotationZ, lerpFactor);
 
